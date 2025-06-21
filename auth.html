@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glowing Coding - Login / Passwordless / Anonymous / GitHub</title>
+  <style>
+    body {
+      background: #191b1f;
+      color: #e9e9e9;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-container {
+      background: #23272e;
+      padding: 2.5rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 24px #0008;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+    .auth-container h2 {
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      font-size: 2rem;
+      color: #6cf0e6;
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .auth-form input {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #333;
+      background: #1d2127;
+      color: #e9e9e9;
+      outline: none;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .auth-form input:focus {
+      border-color: #6cf0e6;
+    }
+    .auth-form button {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: #6cf0e6;
+      color: #181b1f;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .auth-form button:hover {
+      background: #4fd2c5;
+    }
+    .toggle-link, .toggle-method {
+      color: #8ecae6;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.96rem;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+    .anon-btn {
+      margin-top: 1.3rem;
+      background: #b7e4c7;
+      color: #212529;
+      border: none;
+      padding: 0.65rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .anon-btn:hover {
+      background: #95d5b2;
+    }
+    .github-btn {
+      margin-top: 0.7rem;
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7em;
+    }
+    .github-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+    .github-btn:hover {
+      background: #444;
+    }
+    .message {
+      margin-top: 1rem;
+      min-height: 1.2em;
+      font-size: 1rem;
+      color: #8ecae6;
+    }
+    .error-message {
+      color: #ff6b6b;
+    }
+    .success-message {
+      color: #38e38a;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #444;
+      margin: 1.2rem 0 0.7rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2 id="form-title">Login</h2>
+    <form id="auth-form" class="auth-form">
+      <input type="email" id="email" placeholder="Email" required autocomplete="username"/>
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password" style="display:none;"/>
+      <button type="submit" id="submit-btn">Login</button>
+      <div class="message" id="message"></div>
+    </form>
+    <span class="toggle-method" id="toggle-method">Use passwordless sign-in</span>
+    <hr class="divider">
+    <span class="toggle-link" id="toggle-link">Don't have an account? Sign up</span>
+    <button type="button" class="github-btn" id="github-btn" title="Sign in with GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.154-1.11-1.462-1.11-1.462-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.892 1.528 2.341 1.087 2.91.832.091-.647.35-1.087.636-1.338-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.104-.253-.447-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.748-1.025 2.748-1.025.546 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.565 4.943.359.309.678.919.678 1.853 0 1.337-.012 2.419-.012 2.749 0 .267.18.578.688.481C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+      Sign in with GitHub
+    </button>
+    <button type="button" class="anon-btn" id="anon-btn">Continue as Guest (Anonymous)</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signInAnonymously, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    // Firebase config (provided by user)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM elements
+    const formTitle = document.getElementById('form-title');
+    const authForm = document.getElementById('auth-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleMethod = document.getElementById('toggle-method');
+    const toggleLink = document.getElementById('toggle-link');
+    const messageDiv = document.getElementById('message');
+    const anonBtn = document.getElementById('anon-btn');
+    const githubBtn = document.getElementById('github-btn');
+
+    let isLogin = true;
+    let usePassword = true; // true = password login, false = passwordless
+
+    // Configure the actionCodeSettings for passwordless
+    const actionCodeSettings = {
+      url: window.location.origin + window.location.pathname,
+      handleCodeInApp: true,
+    };
+
+    function updateForm() {
+      if (isLogin) {
+        formTitle.textContent = "Login";
+        toggleLink.textContent = "Don't have an account? Sign up";
+        submitBtn.textContent = usePassword ? "Login" : "Send Sign-In Link";
+        toggleMethod.textContent = usePassword ? "Use passwordless sign-in" : "Use password login";
+        passwordInput.style.display = usePassword ? "block" : "none";
+        passwordInput.required = usePassword;
+      } else {
+        formTitle.textContent = "Sign Up";
+        toggleLink.textContent = "Already have an account? Login";
+        submitBtn.textContent = usePassword ? "Sign Up" : "Send Sign-Up Link";
+        toggleMethod.textContent = usePassword ? "Use passwordless sign-up" : "Use password sign-up";
+        passwordInput.style.display = usePassword ? "block" : "none";
+        passwordInput.required = usePassword;
+      }
+      messageDiv.textContent = '';
+      emailInput.value = '';
+      passwordInput.value = '';
+    }
+
+    toggleMethod.addEventListener('click', () => {
+      usePassword = !usePassword;
+      updateForm();
+    });
+
+    toggleLink.addEventListener('click', () => {
+      isLogin = !isLogin;
+      updateForm();
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageDiv.textContent = "";
+      messageDiv.className = "message";
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      if (!email || (!password && usePassword)) {
+        messageDiv.textContent = "Please fill in all fields.";
+        messageDiv.classList.add('error-message');
+        return;
+      }
+
+      try {
+        if (usePassword) {
+          if (isLogin) {
+            await signInWithEmailAndPassword(auth, email, password);
+            messageDiv.textContent = "Logged in successfully! Redirecting...";
+            messageDiv.classList.add('success-message');
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 1200);
+          } else {
+            await createUserWithEmailAndPassword(auth, email, password);
+            messageDiv.textContent = "Account created! Redirecting...";
+            messageDiv.classList.add('success-message');
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 1200);
+          }
+        } else {
+          await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+          window.localStorage.setItem('emailForSignIn', email);
+          messageDiv.textContent = "A sign-in link has been sent to your email. Please check your inbox.";
+          messageDiv.classList.add('success-message');
+        }
+      } catch (error) {
+        let msg = error.message || "Authentication error.";
+        if (msg.includes("auth/weak-password")) msg = "Password should be at least 6 characters.";
+        if (msg.includes("auth/invalid-email")) msg = "Invalid email address.";
+        if (msg.includes("auth/user-not-found")) msg = "No account with this email.";
+        if (msg.includes("auth/email-already-in-use")) msg = "Email already in use.";
+        if (msg.includes("auth/wrong-password")) msg = "Incorrect password.";
+        messageDiv.textContent = msg;
+        messageDiv.classList.add('error-message');
+      }
+    });
+
+    // Anonymous auth
+    anonBtn.addEventListener('click', async () => {
+      messageDiv.textContent = "";
+      messageDiv.className = "message";
+      try {
+        await signInAnonymously(auth);
+        messageDiv.textContent = "Signed in as guest! Redirecting...";
+        messageDiv.classList.add('success-message');
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
+      } catch (error) {
+        let msg = error.message || "Could not sign in anonymously.";
+        messageDiv.textContent = msg;
+        messageDiv.classList.add('error-message');
+      }
+    });
+
+    // GitHub auth
+    githubBtn.addEventListener('click', async () => {
+      messageDiv.textContent = "";
+      messageDiv.className = "message";
+      try {
+        const provider = new GithubAuthProvider();
+        await signInWithPopup(auth, provider);
+        messageDiv.textContent = "Signed in with GitHub! Redirecting...";
+        messageDiv.classList.add('success-message');
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1200);
+      } catch (error) {
+        let msg = error.message || "Could not sign in with GitHub.";
+        if (error.code && error.code === "auth/account-exists-with-different-credential") {
+          msg = "An account already exists with the same email address but different sign-in credentials.";
+        }
+        messageDiv.textContent = msg;
+        messageDiv.classList.add('error-message');
+      }
+    });
+
+    // Handle sign-in with email link on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem('emailForSignIn');
+        if (!email) {
+          email = window.prompt('Please provide your email for confirmation');
+        }
+        try {
+          await signInWithEmailLink(auth, email, window.location.href);
+          window.localStorage.removeItem('emailForSignIn');
+          messageDiv.textContent = "You have signed in! Redirecting...";
+          messageDiv.classList.add('success-message');
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1200);
+        } catch (error) {
+          messageDiv.textContent = "Could not sign in: " + (error.message || "Unknown error");
+          messageDiv.classList.add('error-message');
+        }
+      }
+    });
+
+    // Initial form state
+    updateForm();
+  </script>
+  <!-- Firebase Core & Analytics: Place before any Firebase services -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T"
+    };
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+  </script>
+</body>
+</html>
