@@ -150,22 +150,10 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signInAnonymously, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-    // Firebase config (provided by user)
-    const firebaseConfig = {
-      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
-      authDomain: "glowing-gaming.firebaseapp.com",
-      projectId: "glowing-gaming",
-      storageBucket: "glowing-gaming.firebasestorage.app",
-      messagingSenderId: "962196600930",
-      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
-      measurementId: "G-4Q14J89E6T"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Firebase services are initialized by the script at the end of body as required.
+    const auth = getAuth();
 
     // DOM elements
     const formTitle = document.getElementById('form-title');
@@ -184,7 +172,7 @@
 
     // Configure the actionCodeSettings for passwordless
     const actionCodeSettings = {
-      url: window.location.origin + window.location.pathname,
+      url: window.location.origin + "/index.html",
       handleCodeInApp: true,
     };
 
@@ -240,14 +228,14 @@
             messageDiv.classList.add('success-message');
             setTimeout(() => {
               window.location.href = "index.html";
-            }, 1200);
+            }, 500);
           } else {
             await createUserWithEmailAndPassword(auth, email, password);
             messageDiv.textContent = "Account created! Redirecting...";
             messageDiv.classList.add('success-message');
             setTimeout(() => {
               window.location.href = "index.html";
-            }, 1200);
+            }, 500);
           }
         } else {
           await sendSignInLinkToEmail(auth, email, actionCodeSettings);
@@ -277,7 +265,7 @@
         messageDiv.classList.add('success-message');
         setTimeout(() => {
           window.location.href = "index.html";
-        }, 1200);
+        }, 500);
       } catch (error) {
         let msg = error.message || "Could not sign in anonymously.";
         messageDiv.textContent = msg;
@@ -296,7 +284,7 @@
         messageDiv.classList.add('success-message');
         setTimeout(() => {
           window.location.href = "index.html";
-        }, 1200);
+        }, 500);
       } catch (error) {
         let msg = error.message || "Could not sign in with GitHub.";
         if (error.code && error.code === "auth/account-exists-with-different-credential") {
@@ -321,7 +309,7 @@
           messageDiv.classList.add('success-message');
           setTimeout(() => {
             window.location.href = "index.html";
-          }, 1200);
+          }, 500);
         } catch (error) {
           messageDiv.textContent = "Could not sign in: " + (error.message || "Unknown error");
           messageDiv.classList.add('error-message');
@@ -334,8 +322,11 @@
   </script>
   <!-- Firebase Core & Analytics: Place before any Firebase services -->
   <script type="module">
+    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -345,8 +336,9 @@
       appId: "1:962196600930:web:64f0e1228e6ab66853793b",
       measurementId: "G-4Q14J89E6T"
     };
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
+    const analytics = getAnalytics(app);
   </script>
 </body>
 </html>
