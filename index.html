@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>reCAPTCHA Enterprise Assessment Sample</title>
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfJc2grAAAAAGmbC1ZvgX-V-0KLE8bnmGliavau"></script>
+  <style>
+    body {
+      background: #191b1f;
+      color: #e9e9e9;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #23272e;
+      padding: 2.5rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 24px #0008;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.1rem;
+      color: #6cf0e6;
+      margin-bottom: 1.2rem;
+    }
+    .field {
+      margin-bottom: 1.3rem;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5em;
+      color: #8ecae6;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.7em;
+      border-radius: 0.4em;
+      border: 1px solid #333;
+      background: #1d2127;
+      color: #e9e9e9;
+      font-size: 1.09em;
+      margin-bottom: 0.4em;
+    }
+    button {
+      padding: 0.8em 1.4em;
+      background: #6cf0e6;
+      color: #191b1f;
+      border: none;
+      border-radius: 0.5em;
+      font-size: 1.07em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.6em;
+    }
+    button:hover {
+      background: #4fd2c5;
+    }
+    pre {
+      background: #20232a;
+      color: #aad2ff;
+      border-radius: 0.5em;
+      padding: 1em 1em;
+      margin-top: 1.2em;
+      text-align: left;
+      max-width: 100%;
+      overflow-x: auto;
+      font-size: 0.97em;
+    }
+    .warn {
+      color: #ffb34d;
+      margin-bottom: 1.2em;
+      font-size: 1em;
+      text-align: left;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>reCAPTCHA Enterprise<br>Assessment Sample</h1>
+    <div class="warn">
+      <b>Note:</b> This page demonstrates how to use the <code>CreateAssessment</code> Java class for Google reCAPTCHA Enterprise.<br>
+      You need to run the Java code on your backend server, not in the browser.
+    </div>
+    <form id="recaptcha-form">
+      <div class="field">
+        <label for="projectID">Project ID</label>
+        <input id="projectID" name="projectID" type="text" value="glowing-gaming" required>
+      </div>
+      <div class="field">
+        <label for="recaptchaKey">reCAPTCHA Site Key</label>
+        <input id="recaptchaKey" name="recaptchaKey" type="text" value="6LfJc2grAAAAAGmbC1ZvgX-V-0KLE8bnmGliavau" required>
+      </div>
+      <div class="field">
+        <label for="token">Token (from client)</label>
+        <input id="token" name="token" type="text" placeholder="action-token" required>
+      </div>
+      <div class="field">
+        <label for="action">Action Name</label>
+        <input id="action" name="action" type="text" placeholder="action-name" required>
+      </div>
+      <button type="button" id="getRecaptchaToken">Get reCAPTCHA Token</button>
+      <button type="button" id="generateJava">Show Java Assessment Code</button>
+    </form>
+    <pre id="output" style="display:none;"></pre>
+  </div>
+
+  <script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.enterprise.ready(async () => {
+        const token = await grecaptcha.enterprise.execute('6LfJc2grAAAAAGmbC1ZvgX-V-0KLE8bnmGliavau', {action: 'LOGIN'});
+        document.getElementById('token').value = token;
+        alert('reCAPTCHA token generated and filled in the form!');
+      });
+    }
+
+    document.getElementById('getRecaptchaToken').addEventListener('click', onClick);
+
+    document.getElementById('generateJava').onclick = function() {
+      const projectID = document.getElementById('projectID').value.trim();
+      const recaptchaKey = document.getElementById('recaptchaKey').value.trim();
+      const token = document.getElementById('token').value.trim();
+      const action = document.getElementById('action').value.trim();
+
+      if (!projectID || !recaptchaKey || !token || !action) {
+        alert('Please fill out all fields!');
+        return;
+      }
+
+      const code = 
+`import com.google.cloud.recaptchaenterprise.v1.RecaptchaEnterpriseServiceClient;
+import com.google.recaptchaenterprise.v1.Assessment;
+import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
+import com.google.recaptchaenterprise.v1.Event;
+import com.google.recaptchaenterprise.v1.ProjectName;
+import com.google.recaptchaenterprise.v1.RiskAnalysis.ClassificationReason;
+import java.io.IOException;
+
+public class CreateAssessment {
+  public static void main(String[] args) throws IOException {
+    String projectID = "${projectID}";
+    String recaptchaKey = "${recaptchaKey}";
+    String token = "${token}";
+    String recaptchaAction = "${action}";
+
+    createAssessment(projectID, recaptchaKey, token, recaptchaAction);
+  }
+
+  public static void createAssessment(
+      String projectID, String recaptchaKey, String token, String recaptchaAction)
+      throws IOException {
+    try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
+
+      Event event = Event.newBuilder()
+              .setSiteKey(recaptchaKey)
+              .setToken(token)
+              .build();
+
+      CreateAssessmentRequest createAssessmentRequest =
+          CreateAssessmentRequest.newBuilder()
+              .setParent(ProjectName.of(projectID).toString())
+              .setAssessment(Assessment.newBuilder().setEvent(event).build())
+              .build();
+
+      Assessment response = client.createAssessment(createAssessmentRequest);
+
+      if (!response.getTokenProperties().getValid()) {
+        System.out.println(
+            "The CreateAssessment call failed because the token was: "
+                + response.getTokenProperties().getInvalidReason().name());
+        return;
+      }
+
+      if (!response.getTokenProperties().getAction().equals(recaptchaAction)) {
+        System.out.println(
+            "The action attribute in reCAPTCHA tag is: "
+                + response.getTokenProperties().getAction());
+        System.out.println(
+            "The action attribute in the reCAPTCHA tag "
+                + "does not match the action (" + recaptchaAction + ") you are expecting to score");
+        return;
+      }
+
+      for (ClassificationReason reason : response.getRiskAnalysis().getReasonsList()) {
+        System.out.println("Reason: " + reason);
+      }
+
+      float recaptchaScore = response.getRiskAnalysis().getScore();
+      System.out.println("The reCAPTCHA score is: " + recaptchaScore);
+
+      String assessmentName = response.getName();
+      System.out.println(
+          "Assessment name: " + assessmentName.substring(assessmentName.lastIndexOf("/") + 1));
+    }
+  }
+}`;
+
+      const output = document.getElementById('output');
+      output.textContent = code;
+      output.style.display = "block";
+    };
+  </script>
+
+  <!-- Firebase Core & Analytics: Place before any Firebase services -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T"
+    };
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+</body>
+</html>
