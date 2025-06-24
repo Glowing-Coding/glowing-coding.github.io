@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Mini Minecraft Multiplayer</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #191b1f; color: #e9e9e9; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; }
+    #gameCanvas { background: #23272e; margin: 1.5em auto; display: block; box-shadow: 0 4px 24px #0008; }
+    button { margin: 0.5em; padding: 0.7em 1.2em; border-radius: 0.5em; font-size: 1.1em; border: none; background: #6cf0e6; color: #181b1f; font-weight: 600; cursor: pointer; }
+    button:hover { background: #4fd2c5; }
+  </style>
+  <!-- Firebase compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase modular Auth -->
   <script type="module">
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
     // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
@@ -28,7 +34,6 @@
         window.location.href = "auth.html";
       } else {
         window.user = user; // pass user to game.js
-        // Now load the game logic
         const script = document.createElement('script');
         script.src = "game.js";
         document.body.appendChild(script);
