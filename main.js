@@ -1,16 +1,16 @@
 // main.js
-// Import Three.js and Firebase modules
 import * as THREE from "https://cdn.skypack.dev/three@0.155.0";
 import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-// Firebase app and analytics are already initialized in your HTML as per instructions
-
-// DOM elements
 const canvas = document.getElementById("gameCanvas");
-const loginBox = document.getElementById("loginBox");
-const usernameInput = document.getElementById("usernameInput");
-const joinBtn = document.getElementById("joinBtn");
+const authMessage = document.getElementById("authMessage");
+
+// Utility: random color for player
+function randomColor() {
+  const colors = [0x4FC3F7, 0xF44336, 0x8BC34A, 0xFFD600, 0xAB47BC, 0xFF9800];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
 // Game/player state
 let playerObj = null;
@@ -19,29 +19,29 @@ let lastSentPos = {x: 0, y: 0, z: 0};
 let playerId = "";
 let playerName = "";
 let playerColor = null;
-let authUser = null;
-
-// Utility: random color for player
-function randomColor() {
-  const colors = [0x4FC3F7, 0xF44336, 0x8BC34A, 0xFFD600, 0xAB47BC, 0xFF9800];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
+let db = null;
 
 // Require authentication before game loads
+authMessage.style.display = "block";
+authMessage.innerText = "Checking authentication...";
+
 const auth = getAuth();
 onAuthStateChanged(auth, user => {
   if (!user) {
     // Not authenticated, redirect to auth page
-    window.location.href = "auth.html";
+    authMessage.innerText = "Not logged in. Redirecting to login...";
+    setTimeout(() => {
+      window.location.href = "auth.html";
+    }, 1200);
   } else {
     // Authenticated, use their info
-    authUser = user;
     playerId = user.uid;
     playerName = user.displayName || user.email || "Anonymous";
     playerColor = randomColor();
+    db = getDatabase();
 
-    // Hide username box (since we use their account info)
-    if (loginBox) loginBox.style.display = "none";
+    // Start the game
+    authMessage.style.display = "none";
     startGame();
   }
 });
@@ -126,7 +126,6 @@ function startGame() {
   });
 
   // Firebase: show all players
-  const db = getDatabase();
   const playersRef = ref(db, "mc3d/players");
   onValue(playersRef, (snap) => {
     const data = snap.val() || {};
@@ -206,7 +205,13 @@ function startGame() {
   window.focus();
 }
 
-// Resize handler (optional, can be improved)
+// Responsive resize
 window.addEventListener('resize', () => {
-  // You may want to update Three.js camera/renderer here
+  if (!playerObj) return; // Not initialized yet
+  // Update camera aspect and renderer size
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const renderer = canvas.renderer;
+  canvas.width = width;
+  canvas.height = height;
 });
