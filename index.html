@@ -2,20 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mini Minecraft Multiplayer</title>
+  <title>Glowing Minecraft 3D Multiplayer</title>
   <style>
-    body { background: #191b1f; color: #e9e9e9; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; }
-    #gameCanvas { background: #23272e; margin: 1.5em auto; display: block; box-shadow: 0 4px 24px #0008; }
-    button { margin: 0.5em; padding: 0.7em 1.2em; border-radius: 0.5em; font-size: 1.1em; border: none; background: #6cf0e6; color: #181b1f; font-weight: 600; cursor: pointer; }
-    button:hover { background: #4fd2c5; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #222;
+    }
+    #gameCanvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      outline: none;
+      background: #555;
+    }
+    #loginBox {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: #222;
+      color: #fff;
+      border: 2px solid #55aaff;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      z-index: 10;
+      display: block;
+    }
+    #usernameInput {
+      font-size: 1.2em;
+      padding: 8px;
+      width: 60%;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+      margin-bottom: 10px;
+    }
+    #joinBtn {
+      font-size: 1.2em;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      background: #55aaff;
+      color: #fff;
+      cursor: pointer;
+    }
   </style>
-  <!-- Firebase compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Firebase modular Auth -->
+</head>
+<body>
+  <div id="loginBox">
+    <h2>Minecraft 3D Multiplayer</h2>
+    <input id="usernameInput" placeholder="Enter username" maxlength="16" /><br>
+    <button id="joinBtn">Join Game</button>
+  </div>
+  <canvas id="gameCanvas" tabindex="0"></canvas>
+  <script type="module" src="main.js"></script>
+  <!-- Firebase scripts (MUST be before any Firebase code) -->
   <script type="module">
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    // Your Firebase config
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -23,30 +75,12 @@
       storageBucket: "glowing-gaming.firebasestorage.app",
       messagingSenderId: "962196600930",
       appId: "1:962196600930:web:64f0e1228e6ab66853793b",
-      measurementId: "G-4Q14J89E6T",
-      databaseURL: "https://glowing-gaming-default-rtdb.firebaseio.com"
+      measurementId: "G-4Q14J89E6T"
     };
-    firebase.initializeApp(firebaseConfig);
 
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "auth.html";
-      } else {
-        window.user = user; // pass user to game.js
-        const script = document.createElement('script');
-        script.src = "game.js";
-        document.body.appendChild(script);
-      }
-    });
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
   </script>
-</head>
-<body>
-  <h1>Mini Minecraft Multiplayer</h1>
-  <canvas id="gameCanvas" width="640" height="480"></canvas>
-  <div>
-    <button id="placeBlockBtn">Place Block</button>
-    <button id="removeBlockBtn">Remove Block</button>
-  </div>
 </body>
 </html>
