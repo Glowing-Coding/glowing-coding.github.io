@@ -17,57 +17,31 @@
       outline: none;
       background: #555;
     }
-    #loginBox {
+    #authMessage {
       position: absolute;
-      top: 30%;
+      top: 40%;
       left: 50%;
-      transform: translate(-50%, -30%);
-      background: #222;
+      transform: translate(-50%, -40%);
       color: #fff;
+      background: #23272e;
       border: 2px solid #55aaff;
       border-radius: 10px;
       padding: 30px;
+      font-size: 1.3em;
       text-align: center;
       z-index: 10;
-      display: block;
-    }
-    #usernameInput {
-      font-size: 1.2em;
-      padding: 8px;
-      width: 60%;
-      border-radius: 5px;
-      border: 1px solid #aaa;
-      margin-bottom: 10px;
-    }
-    #joinBtn {
-      font-size: 1.2em;
-      padding: 8px 18px;
-      border: none;
-      border-radius: 5px;
-      background: #55aaff;
-      color: #fff;
-      cursor: pointer;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="loginBox">
-    <h2>Minecraft 3D Multiplayer</h2>
-    <input id="usernameInput" placeholder="Enter username" maxlength="16" /><br>
-    <button id="joinBtn">Join Game</button>
-  </div>
+  <div id="authMessage">Authenticating...</div>
   <canvas id="gameCanvas" tabindex="0"></canvas>
-  <script type="module" src="main.js"></script>
-  <!-- Firebase scripts (MUST be before any Firebase code) -->
+
+  <!-- Your Firebase initialization as per instructions (must be before any Firebase services) -->
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -77,10 +51,10 @@
       appId: "1:962196600930:web:64f0e1228e6ab66853793b",
       measurementId: "G-4Q14J89E6T"
     };
-
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
