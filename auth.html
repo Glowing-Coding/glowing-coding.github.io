@@ -150,10 +150,12 @@
   </div>
 
   <script type="module">
+    console.log("[Auth] Importing Firebase Auth...");
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signInAnonymously, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
     // Firebase services are initialized by the script at the end of body as required.
     const auth = getAuth();
+    console.log("[Auth] Firebase Auth initialized.", auth);
 
     // DOM elements
     const formTitle = document.getElementById('form-title');
@@ -177,6 +179,7 @@
     };
 
     function updateForm() {
+      console.log("[Auth] Updating form. isLogin:", isLogin, "usePassword:", usePassword);
       if (isLogin) {
         formTitle.textContent = "Login";
         toggleLink.textContent = "Don't have an account? Sign up";
@@ -199,11 +202,13 @@
 
     toggleMethod.addEventListener('click', () => {
       usePassword = !usePassword;
+      console.log("[Auth] Toggled method. usePassword:", usePassword);
       updateForm();
     });
 
     toggleLink.addEventListener('click', () => {
       isLogin = !isLogin;
+      console.log("[Auth] Toggled link. isLogin:", isLogin);
       updateForm();
     });
 
@@ -213,10 +218,12 @@
       messageDiv.className = "message";
       const email = emailInput.value;
       const password = passwordInput.value;
+      console.log("[Auth] Form submitted. isLogin:", isLogin, "usePassword:", usePassword, "email:", email);
 
       if (!email || (!password && usePassword)) {
         messageDiv.textContent = "Please fill in all fields.";
         messageDiv.classList.add('error-message');
+        console.log("[Auth] Missing fields.");
         return;
       }
 
@@ -226,6 +233,7 @@
             await signInWithEmailAndPassword(auth, email, password);
             messageDiv.textContent = "Logged in successfully! Redirecting...";
             messageDiv.classList.add('success-message');
+            console.log("[Auth] Logged in with email/password.");
             setTimeout(() => {
               window.location.href = "index.html";
             }, 500);
@@ -233,6 +241,7 @@
             await createUserWithEmailAndPassword(auth, email, password);
             messageDiv.textContent = "Account created! Redirecting...";
             messageDiv.classList.add('success-message');
+            console.log("[Auth] Account created with email/password.");
             setTimeout(() => {
               window.location.href = "index.html";
             }, 500);
@@ -242,6 +251,7 @@
           window.localStorage.setItem('emailForSignIn', email);
           messageDiv.textContent = "A sign-in link has been sent to your email. Please check your inbox.";
           messageDiv.classList.add('success-message');
+          console.log("[Auth] Sent sign-in link to email.");
         }
       } catch (error) {
         let msg = error.message || "Authentication error.";
@@ -252,6 +262,7 @@
         if (msg.includes("auth/wrong-password")) msg = "Incorrect password.";
         messageDiv.textContent = msg;
         messageDiv.classList.add('error-message');
+        console.error("[Auth] Error:", error);
       }
     });
 
@@ -259,10 +270,12 @@
     anonBtn.addEventListener('click', async () => {
       messageDiv.textContent = "";
       messageDiv.className = "message";
+      console.log("[Auth] Anonymous sign-in attempt.");
       try {
         await signInAnonymously(auth);
         messageDiv.textContent = "Signed in as guest! Redirecting...";
         messageDiv.classList.add('success-message');
+        console.log("[Auth] Signed in anonymously.");
         setTimeout(() => {
           window.location.href = "index.html";
         }, 500);
@@ -270,6 +283,7 @@
         let msg = error.message || "Could not sign in anonymously.";
         messageDiv.textContent = msg;
         messageDiv.classList.add('error-message');
+        console.error("[Auth] Anonymous sign-in error:", error);
       }
     });
 
@@ -277,11 +291,13 @@
     githubBtn.addEventListener('click', async () => {
       messageDiv.textContent = "";
       messageDiv.className = "message";
+      console.log("[Auth] GitHub sign-in attempt.");
       try {
         const provider = new GithubAuthProvider();
         await signInWithPopup(auth, provider);
         messageDiv.textContent = "Signed in with GitHub! Redirecting...";
         messageDiv.classList.add('success-message');
+        console.log("[Auth] Signed in with GitHub.");
         setTimeout(() => {
           window.location.href = "index.html";
         }, 500);
@@ -292,11 +308,13 @@
         }
         messageDiv.textContent = msg;
         messageDiv.classList.add('error-message');
+        console.error("[Auth] GitHub sign-in error:", error);
       }
     });
 
     // Handle sign-in with email link on page load
     window.addEventListener('DOMContentLoaded', async () => {
+      console.log("[Auth] DOMContentLoaded. Checking for email link sign-in...");
       if (isSignInWithEmailLink(auth, window.location.href)) {
         let email = window.localStorage.getItem('emailForSignIn');
         if (!email) {
@@ -307,18 +325,21 @@
           window.localStorage.removeItem('emailForSignIn');
           messageDiv.textContent = "You have signed in! Redirecting...";
           messageDiv.classList.add('success-message');
+          console.log("[Auth] Signed in with email link.");
           setTimeout(() => {
             window.location.href = "index.html";
           }, 500);
         } catch (error) {
           messageDiv.textContent = "Could not sign in: " + (error.message || "Unknown error");
           messageDiv.classList.add('error-message');
+          console.error("[Auth] Email link sign-in error:", error);
         }
       }
     });
 
     // Initial form state
     updateForm();
+    console.log("[Auth] Form initialized.");
   </script>
   <!-- Firebase Core & Analytics: Place before any Firebase services -->
   <script type="module">

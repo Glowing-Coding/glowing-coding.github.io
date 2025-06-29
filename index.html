@@ -43,6 +43,7 @@
     console.log("Initializing Firebase app...");
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -57,6 +58,29 @@
     console.log("Firebase app initialized.", app);
     const analytics = getAnalytics(app);
     console.log("Firebase analytics initialized.", analytics);
+
+    // Auth check
+    const auth = getAuth();
+    const authMessage = document.getElementById('authMessage');
+    const gameCanvas = document.getElementById('gameCanvas');
+    authMessage.style.display = 'block';
+    authMessage.textContent = 'Authenticating...';
+    gameCanvas.style.display = 'none';
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        authMessage.style.display = 'none';
+        gameCanvas.style.display = 'block';
+        console.log('User is logged in:', user);
+      } else {
+        // Not signed in
+        authMessage.style.display = 'block';
+        authMessage.textContent = 'You need to login to play.';
+        gameCanvas.style.display = 'none';
+        console.log('User is not logged in.');
+      }
+    });
   </script>
 
   <script type="module" src="main.js"></script>
