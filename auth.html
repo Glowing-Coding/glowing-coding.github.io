@@ -170,9 +170,11 @@
   <script type="module">
     console.log("[Auth] Importing Firebase Auth...");
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signInAnonymously, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getPerformance } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-performance.js";
 
     // Use the already initialized app
     const auth = getAuth(window.firebaseApp);
+    window.firebasePerformance = getPerformance(window.firebaseApp);
     console.log("[Auth] Firebase Auth initialized.", auth);
 
     // DOM elements

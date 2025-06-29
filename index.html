@@ -98,6 +98,7 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
     import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app-check.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getPerformance } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-performance.js";
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -112,6 +113,8 @@
     console.log("Firebase app initialized.", app);
     const analytics = getAnalytics(app);
     console.log("Firebase analytics initialized.", analytics);
+    const performance = getPerformance(app);
+    console.log("Firebase Performance Monitoring initialized.", performance);
 
     // --- App Check initialization ---
     const appCheck = initializeAppCheck(app, {

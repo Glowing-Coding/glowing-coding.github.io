@@ -65,5 +65,20 @@
     Maybe it was moved or deleted.</p>
     <a class="button" href="index.html">Go Home</a>
   </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getPerformance } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-performance.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T"
+    };
+    const app = initializeApp(firebaseConfig);
+    getPerformance(app);
+  </script>
 </body>
 </html>
