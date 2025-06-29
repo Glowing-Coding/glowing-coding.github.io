@@ -31,11 +31,63 @@
       text-align: center;
       z-index: 10;
       display: none;
+      box-shadow: 0 0 32px #55aaff, 0 0 64px #6cf0e6;
+      text-shadow: 0 0 8px #55aaff, 0 0 16px #6cf0e6, 0 0 2px #fff;
+      animation: authGlow 2s infinite alternate;
+    }
+    @keyframes authGlow {
+      0% {
+        box-shadow: 0 0 32px #55aaff, 0 0 64px #6cf0e6;
+        text-shadow: 0 0 8px #55aaff, 0 0 16px #6cf0e6, 0 0 2px #fff;
+      }
+      100% {
+        box-shadow: 0 0 64px #6cf0e6, 0 0 128px #55aaff;
+        text-shadow: 0 0 16px #6cf0e6, 0 0 32px #55aaff, 0 0 4px #fff;
+      }
+    }
+    #versionMessage {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 34, 40, 0.92);
+      color: #fff;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      text-align: center;
+      flex-direction: column;
+      letter-spacing: 1px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      text-shadow: 0 0 12px #55aaff, 0 0 32px #6cf0e6, 0 0 2px #fff;
+      animation: versionGlow 2s infinite alternate;
+      border-radius: 0;
+    }
+    @keyframes versionGlow {
+      0% {
+        box-shadow: 0 0 32px #55aaff, 0 0 64px #6cf0e6;
+        text-shadow: 0 0 12px #55aaff, 0 0 32px #6cf0e6, 0 0 2px #fff;
+      }
+      100% {
+        box-shadow: 0 0 64px #6cf0e6, 0 0 128px #55aaff;
+        text-shadow: 0 0 24px #6cf0e6, 0 0 48px #55aaff, 0 0 4px #fff;
+      }
+    }
+    #versionMessage strong {
+      color: #6cf0e6;
+      text-shadow: 0 0 8px #55aaff, 0 0 16px #6cf0e6;
     }
   </style>
 </head>
 <body>
   <div id="authMessage">Authenticating...</div>
+  <div id="versionMessage">
+    <span><strong>Your version of the game is outdated.</strong><br>Please refresh the game.</span>
+  </div>
   <canvas id="gameCanvas" tabindex="0"></canvas>
 
   <!-- Your Firebase initialization as per instructions (must be before any Firebase services) -->
@@ -81,6 +133,25 @@
         console.log('User is not logged in.');
       }
     });
+
+    // Version polling logic
+    let currentVersion = null;
+    async function checkVersion() {
+      try {
+        const res = await fetch('version.txt?_=' + Date.now());
+        if (!res.ok) return;
+        const version = (await res.text()).trim();
+        if (currentVersion === null) {
+          currentVersion = version;
+        } else if (version !== currentVersion) {
+          document.getElementById('versionMessage').style.display = 'flex';
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }
+    setInterval(checkVersion, 30000); // check every 30 seconds
+    checkVersion(); // initial check
   </script>
 
   <script type="module" src="main.js"></script>
