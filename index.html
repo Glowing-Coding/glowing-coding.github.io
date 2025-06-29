@@ -97,6 +97,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
     import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app-check.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -113,12 +114,27 @@
     console.log("Firebase analytics initialized.", analytics);
 
     // --- App Check initialization ---
-    // TODO: Replace 'YOUR_RECAPTCHA_SITE_KEY' with your actual reCAPTCHA v3 site key from Firebase Console
     const appCheck = initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider('6LeCaWErAAAAAPjMaRI7G3c4p1605G9g0OeE5iAB'),
       isTokenAutoRefreshEnabled: true
     });
     // --- End App Check initialization ---
+
+    // --- Firestore version check ---
+    const db = getFirestore(app);
+    const versionDoc = doc(db, 'meta/version');
+    let currentVersion = null;
+    onSnapshot(versionDoc, (docSnap) => {
+      if (docSnap.exists()) {
+        const version = docSnap.data().value;
+        if (currentVersion === null) {
+          currentVersion = version;
+        } else if (version !== currentVersion) {
+          document.getElementById('versionMessage').style.display = 'flex';
+        }
+      }
+    });
+    // --- End Firestore version check ---
 
     // Auth check
     const auth = getAuth();
@@ -142,25 +158,6 @@
         console.log('User is not logged in.');
       }
     });
-
-    // Version polling logic
-    let currentVersion = null;
-    async function checkVersion() {
-      try {
-        const res = await fetch('version.txt?_=' + Date.now());
-        if (!res.ok) return;
-        const version = (await res.text()).trim();
-        if (currentVersion === null) {
-          currentVersion = version;
-        } else if (version !== currentVersion) {
-          document.getElementById('versionMessage').style.display = 'flex';
-        }
-      } catch (e) {
-        // Ignore errors
-      }
-    }
-    setInterval(checkVersion, 30000); // check every 30 seconds
-    checkVersion(); // initial check
   </script>
 
   <script type="module" src="main.js"></script>
