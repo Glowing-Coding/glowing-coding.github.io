@@ -153,6 +153,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app-check.js";
     const firebaseConfig = {
       apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
       authDomain: "glowing-gaming.firebaseapp.com",
@@ -165,6 +166,11 @@
     // Initialize Firebase ONCE and attach to window for other scripts
     window.firebaseApp = initializeApp(firebaseConfig);
     window.firebaseAnalytics = getAnalytics(window.firebaseApp);
+    // Initialize App Check with reCAPTCHA v3
+    window.firebaseAppCheck = initializeAppCheck(window.firebaseApp, {
+      provider: new ReCaptchaV3Provider('6LeCaWErAAAAAPjMaRI7G3c4p1605G9g0OeE5iAB'),
+      isTokenAutoRefreshEnabled: true
+    });
   </script>
 
   <script type="module">
