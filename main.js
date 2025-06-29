@@ -1,5 +1,5 @@
 // main.js
-import * as THREE from "https://cdn.skypack.dev/three@0.155.0";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js";
 import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 

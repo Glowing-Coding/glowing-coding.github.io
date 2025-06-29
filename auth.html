@@ -149,12 +149,30 @@
     <button type="button" class="anon-btn" id="anon-btn">Continue as Guest (Anonymous)</button>
   </div>
 
+  <!-- Firebase Core & Analytics: Place before any Firebase services -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T"
+    };
+    // Initialize Firebase ONCE and attach to window for other scripts
+    window.firebaseApp = initializeApp(firebaseConfig);
+    window.firebaseAnalytics = getAnalytics(window.firebaseApp);
+  </script>
+
   <script type="module">
     console.log("[Auth] Importing Firebase Auth...");
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signInAnonymously, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-    // Firebase services are initialized by the script at the end of body as required.
-    const auth = getAuth();
+    // Use the already initialized app
+    const auth = getAuth(window.firebaseApp);
     console.log("[Auth] Firebase Auth initialized.", auth);
 
     // DOM elements
@@ -340,26 +358,6 @@
     // Initial form state
     updateForm();
     console.log("[Auth] Form initialized.");
-  </script>
-  <!-- Firebase Core & Analytics: Place before any Firebase services -->
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
-      authDomain: "glowing-gaming.firebaseapp.com",
-      projectId: "glowing-gaming",
-      storageBucket: "glowing-gaming.firebasestorage.app",
-      messagingSenderId: "962196600930",
-      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
-      measurementId: "G-4Q14J89E6T"
-    };
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
   </script>
 </body>
 </html>
