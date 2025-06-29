@@ -40,6 +40,7 @@
 
   <!-- Your Firebase initialization as per instructions (must be before any Firebase services) -->
   <script type="module">
+    console.log("Initializing Firebase app...");
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
     const firebaseConfig = {
@@ -51,8 +52,11 @@
       appId: "1:962196600930:web:64f0e1228e6ab66853793b",
       measurementId: "G-4Q14J89E6T"
     };
+    console.log("Firebase config:", firebaseConfig);
     const app = initializeApp(firebaseConfig);
+    console.log("Firebase app initialized.", app);
     const analytics = getAnalytics(app);
+    console.log("Firebase analytics initialized.", analytics);
   </script>
 
   <script type="module" src="main.js"></script>
