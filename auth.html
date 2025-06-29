@@ -192,7 +192,7 @@
 
     // Configure the actionCodeSettings for passwordless
     const actionCodeSettings = {
-      url: window.location.origin + "/index.html",
+      url: window.location.origin + "/index",
       handleCodeInApp: true,
     };
 
@@ -253,7 +253,7 @@
             messageDiv.classList.add('success-message');
             console.log("[Auth] Logged in with email/password.");
             setTimeout(() => {
-              window.location.href = "index.html";
+              window.location.href = "index";
             }, 500);
           } else {
             await createUserWithEmailAndPassword(auth, email, password);
@@ -261,7 +261,7 @@
             messageDiv.classList.add('success-message');
             console.log("[Auth] Account created with email/password.");
             setTimeout(() => {
-              window.location.href = "index.html";
+              window.location.href = "index";
             }, 500);
           }
         } else {
@@ -295,7 +295,7 @@
         messageDiv.classList.add('success-message');
         console.log("[Auth] Signed in anonymously.");
         setTimeout(() => {
-          window.location.href = "index.html";
+          window.location.href = "index";
         }, 500);
       } catch (error) {
         let msg = error.message || "Could not sign in anonymously.";
@@ -317,7 +317,7 @@
         messageDiv.classList.add('success-message');
         console.log("[Auth] Signed in with GitHub.");
         setTimeout(() => {
-          window.location.href = "index.html";
+          window.location.href = "index";
         }, 500);
       } catch (error) {
         let msg = error.message || "Could not sign in with GitHub.";
@@ -345,7 +345,7 @@
           messageDiv.classList.add('success-message');
           console.log("[Auth] Signed in with email link.");
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "index";
           }, 500);
         } catch (error) {
           messageDiv.textContent = "Could not sign in: " + (error.message || "Unknown error");
