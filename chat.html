@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glowing Chat</title>
+  <style>
+    body {
+      background: #191b1f;
+      color: #e9e9e9;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-container {
+      background: #23272e;
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 24px #0008;
+      width: 100%;
+      max-width: 420px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #6cf0e6;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      background: #1d2127;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      min-height: 250px;
+      max-height: 350px;
+    }
+    .chat-message {
+      margin-bottom: 0.7em;
+      padding: 0.5em 0.8em;
+      border-radius: 0.5em;
+      background: #333a;
+      color: #fff;
+      word-break: break-word;
+    }
+    .chat-message.me {
+      background: #6cf0e6;
+      color: #191b1f;
+      text-align: right;
+    }
+    .chat-form {
+      display: flex;
+      gap: 0.5em;
+    }
+    .chat-form input {
+      flex: 1;
+      padding: 0.7em 1em;
+      border-radius: 0.5em;
+      border: 1px solid #333;
+      background: #1d2127;
+      color: #e9e9e9;
+      font-size: 1em;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .chat-form input:focus {
+      border-color: #6cf0e6;
+    }
+    .chat-form button {
+      padding: 0.7em 1.2em;
+      border-radius: 0.5em;
+      border: none;
+      background: #6cf0e6;
+      color: #181b1f;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chat-form button:hover {
+      background: #4fd2c5;
+    }
+    .login-message {
+      color: #ff6b6b;
+      text-align: center;
+      margin-top: 2em;
+      font-size: 1.1em;
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K69W2J701T"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K69W2J701T');
+  </script>
+  <!-- Firebase App Analytics is initialized in the main script below -->
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">Glowing Chat</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <form class="chat-form" id="chat-form" style="display:none;">
+      <input type="text" id="chat-input" placeholder="Type your message..." maxlength="300" required autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+    <div class="login-message" id="login-message" style="display:none;">You must be logged in to chat.</div>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2jQMtZLgvyB7P1EsB1rqv4fdzcniQq-Y",
+      authDomain: "glowing-gaming.firebaseapp.com",
+      projectId: "glowing-gaming",
+      storageBucket: "glowing-gaming.firebasestorage.app",
+      messagingSenderId: "962196600930",
+      appId: "1:962196600930:web:64f0e1228e6ab66853793b",
+      measurementId: "G-4Q14J89E6T",
+      databaseURL: "https://glowing-gaming-default-rtdb.firebaseio.com/"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const loginMessage = document.getElementById('login-message');
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        chatForm.style.display = '';
+        loginMessage.style.display = 'none';
+      } else {
+        currentUser = null;
+        chatForm.style.display = 'none';
+        loginMessage.style.display = '';
+      }
+    });
+
+    // Listen for new messages
+    const messagesRef = ref(db, 'chat/messages');
+    onChildAdded(messagesRef, (snapshot) => {
+      const msg = snapshot.val();
+      const div = document.createElement('div');
+      div.className = 'chat-message' + (currentUser && msg.uid === currentUser.uid ? ' me' : '');
+      div.textContent = (msg.displayName || 'Anonymous') + ': ' + msg.text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    // Send message
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+      const text = chatInput.value.trim();
+      if (!text) return;
+      push(messagesRef, {
+        uid: currentUser.uid,
+        displayName: currentUser.displayName || currentUser.email || 'Anonymous',
+        text,
+        timestamp: serverTimestamp()
+      });
+      chatInput.value = '';
+    });
+  </script>
+</body>
+</html>
